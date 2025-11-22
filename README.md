@@ -54,7 +54,7 @@ Cada carpeta contiene un proyecto completo de Android Studio con su respectiva a
 
 ## 📋 Requisitos
 
-- Android Studio Arctic Fox o superior
+- Android Studio
 - JDK 8 o superior
 - Android SDK (API 21+)
 - Dispositivo Android o emulador
