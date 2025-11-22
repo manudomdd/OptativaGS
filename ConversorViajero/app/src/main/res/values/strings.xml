@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ConversorViajero</string>
+    <string name="boton_convertir">Convertir</string>
+    <string name="cantidad_euros">Introduzca una cantidad en euros</string>
+</resources>
