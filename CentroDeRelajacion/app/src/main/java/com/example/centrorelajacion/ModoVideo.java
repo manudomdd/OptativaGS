@@ -34,8 +34,5 @@ public class ModoVideo extends AppCompatActivity {
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_relajante);
         videoView.setVideoURI(videoUri);
         videoView.start();
-
-
-
     }
 }

@@ -41,6 +41,5 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("RelaxPrefs", MODE_PRIVATE);
         String text = prefs.getString("ultimo_modo", "Aún no has usado la applicación");
         Toast.makeText(this, "Tu ultimo modo fue: " + text, Toast.LENGTH_SHORT).show();
-
     }
 }
