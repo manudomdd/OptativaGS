@@ -54,10 +54,11 @@ Cada carpeta contiene un proyecto completo de Android Studio con su respectiva a
 
 ## 📋 Requisitos
 
-- Android Studio
-- JDK 8 o superior
+- Android Studio (actualmente usando la version 4.1.2)
+- JDK 8
 - Android SDK (API 21+)
 - Dispositivo Android o emulador
+- Recomendable abrir los proyectos directamente en el teléfono android
 
 ## 📝 Actividades
 
