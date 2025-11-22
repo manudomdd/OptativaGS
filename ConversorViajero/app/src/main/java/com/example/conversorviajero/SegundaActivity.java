@@ -29,6 +29,5 @@ public class SegundaActivity extends AppCompatActivity {
 
         text.setText("La conversion a dolares es " + resultFormatted);
 
-
     }
 }
