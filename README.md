@@ -80,7 +80,7 @@ Las actividades incluidas en este repositorio cubren diferentes aspectos del des
 
 <div align="center">
 
-**Curso académico - Asignatura Optativa**
+**Curso académico 2 DAM - Asignatura Optativa**
 
 Desarrollado con Android Studio y Java
 
