@@ -2,6 +2,7 @@ package com.example.guiaturistica;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,7 @@ public class Explicacion extends AppCompatActivity {
         TextView texto = findViewById(R.id.textView);
         ImageView imagen = findViewById(R.id.imageView2);
         Button reproducir = findViewById(R.id.button4);
+        Button volver = findViewById(R.id.button5);
 
         if (seleccion.equalsIgnoreCase("sevilla")) {
             imagen.setImageResource(R.drawable.sevilla);
@@ -37,6 +39,20 @@ public class Explicacion extends AppCompatActivity {
                     }
                 }
             });
+
+            volver.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+
+                    mediaPlayer.release();
+
+                    Intent intent = new Intent(Explicacion.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            });
         } else if (seleccion.equalsIgnoreCase("granada")) {
             imagen.setImageResource(R.drawable.granada);
             texto.setText("La Alhambra de Granada es un majestuoso palacio y fortaleza islámica");
@@ -47,6 +63,19 @@ public class Explicacion extends AppCompatActivity {
                     if (!mediaPlayer.isPlaying()) {
                         mediaPlayer.start();
                     }
+                }
+            });
+            volver.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+
+                    mediaPlayer.release();
+
+                    Intent intent = new Intent(Explicacion.this, MainActivity.class);
+                    startActivity(intent);
                 }
             });
         } else {
