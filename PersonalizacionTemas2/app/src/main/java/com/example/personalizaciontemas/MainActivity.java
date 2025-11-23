@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         seleccionarTema();
-        obtenerPreferencias();
+        obtenerPreferencias(); //siempre salta porque al cambiar de tema se reinicia la app y salta el constructor.
     }
 
     public void seleccionarTema() {
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!claro.isChecked() && !oscuro.isChecked()) {
             Toast.makeText(this, "Debe de seleccionar una de las opciones", Toast.LENGTH_SHORT).show();
-            return; 
+            return;
         }
 
         boton.setOnClickListener(v -> {
