@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         float sNum = numeros[1];
         float result = 0;
 
-        // Usamos if/else en lugar de switch
         if (tipo.equals("+")) {
             result = fNum + sNum;
         } else if (tipo.equals("-")) {
@@ -84,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putFloat("lastResult", result);
         editor.apply();
-
-        // Enviar resultado a Resultado.class
+        
         Intent intent = new Intent(MainActivity.this, Resultado.class);
         intent.putExtra("resultado", result);
         startActivity(intent);
