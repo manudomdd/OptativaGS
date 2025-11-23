@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putFloat("lastResult", result);
         editor.apply();
-        
+
         Intent intent = new Intent(MainActivity.this, Resultado.class);
         intent.putExtra("resultado", result);
         startActivity(intent);
