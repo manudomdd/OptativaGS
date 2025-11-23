@@ -28,7 +28,7 @@ public class Villancico extends AppCompatActivity {
             mediaPlayer = MediaPlayer.create(this, R.raw.reno);
             inicializarBotones();
         } else {
-            mediaPlayer = MediaPlayer.create(this, R.raw.campana); 
+            mediaPlayer = MediaPlayer.create(this, R.raw.campana);
             inicializarBotones();
         }
     }
