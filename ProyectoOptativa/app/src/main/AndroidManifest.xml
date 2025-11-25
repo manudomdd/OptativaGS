@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoOptativa">
-        <activity android:name=".StatesActivity"></activity>
+        <activity android:name=".EstresadoActivity"></activity>
+        <activity android:name=".AlegreActivity" />
+        <activity android:name=".StatesActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

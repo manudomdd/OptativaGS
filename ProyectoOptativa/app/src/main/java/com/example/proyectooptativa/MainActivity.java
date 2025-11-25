@@ -26,12 +26,15 @@ public class MainActivity extends AppCompatActivity {
             String nombre = texto.getText().toString();
             if (nombre == null || nombre.isEmpty()) {
                 Toast.makeText(this, "Debe de introducir un nombre.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (!nombre.matches("^[a-zA-Z]+$")) {
+                Toast.makeText(this, "El nombre solo puede contener letras", Toast.LENGTH_SHORT).show();
+                return;
             } else {
                 Toast.makeText(this, "¡Bienvenido " + nombre + "!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, StatesActivity.class);
                 intent.putExtra("nombre", nombre);
                 startActivity(intent);
-
             }
         });
     }

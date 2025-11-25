@@ -2,10 +2,13 @@ package com.example.proyectooptativa;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class StatesActivity extends AppCompatActivity {
 
@@ -14,19 +17,39 @@ public class StatesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_state);
         inicializarTexto();
+        botonAlegre();
+        botonTriste();
+        botonEstresado();
     }
 
     protected void inicializarTexto() {
         TextView texto = findViewById(R.id.textView2);
         String nombre = getIntent().getStringExtra("nombre");
-        texto.setText("Hola " + nombre);
+
+        if (nombre == null) {
+            nombre = "amigo";
+        }
+
+        int hora = determinarFecha();
+        String saludo;
+
+        if (hora >= 6 && hora < 12) {
+            saludo = "buenos días";
+        } else if (hora >= 12 && hora < 20) {
+            saludo = "buenas tardes";
+        } else {
+            saludo = "buenas noches";
+        }
+
+        texto.setText("Hola " + nombre + ", " + saludo);
     }
 
     protected void botonAlegre() {
         Button botonAlegre = findViewById(R.id.button2);
         botonAlegre.setOnClickListener(v -> {
             Toast.makeText(this, "¡Me alegro mucho de que estés feliz!", Toast.LENGTH_SHORT).show();
-            //abrir un dialogo con un gif de un gato bailando. hay que importar librerias.
+            Intent intent = new Intent(StatesActivity.this, AlegreActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -41,8 +64,14 @@ public class StatesActivity extends AppCompatActivity {
     protected void botonEstresado() {
         Button botonEstresado = findViewById(R.id.button4);
         botonEstresado.setOnClickListener(v -> {
-            Toast.makeText(this, "Tranquilo, te paso con un video para que te relajes", Toast.LENGTH_SHORT).show();
-            //poner un vídeo relajante tipo ASMR.
+            Toast.makeText(this, "Tranquilo, te dejo con musica relajante, dale al play", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(StatesActivity.this, EstresadoActivity.class);
+            startActivity(intent);
         });
+    }
+
+    private int determinarFecha() {
+        Calendar calendario = Calendar.getInstance();
+        return calendario.get(Calendar.HOUR_OF_DAY);
     }
 }
