@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Traductor Express</string>
+    <string name="palabra">Introduzca una palabra</string>
+    <string name="btnTraducir">Traducir</string>
+</resources>

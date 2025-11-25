@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Converter</string>
+    <string name="boton_convertir">Convert</string>
+    <string name="cantidad_euros">Enter an amount in euros</string>
+</resources>
