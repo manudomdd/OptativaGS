@@ -9,6 +9,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         botonAceptar();
+        mostrarFechaYMoneda();
     }
 
     protected void botonAceptar() {
@@ -37,5 +45,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void mostrarFechaYMoneda() {
+        TextView text = findViewById(R.id.textView5);
+        Calendar calendar = Calendar.getInstance();
+        double cantidad = 2500.50;
+
+        DateFormat formatterFecha = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        NumberFormat formatterNumero = NumberFormat.getCurrencyInstance();
+
+        String fechaStr = formatterFecha.format(calendar.getTime());
+        String moneda = formatterNumero.format(cantidad);
+
+        text.setText("Fecha: " + fechaStr + "\n Moneda: " + moneda);
+
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.proyectooptativa">
+    package="com.example.sqlite">
 
     <application
         android:allowBackup="true"
@@ -8,11 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ProyectoOptativa">
-        <activity android:name=".TristeActivity"></activity>
-        <activity android:name=".EstresadoActivity" />
-        <activity android:name=".AlegreActivity" />
-        <activity android:name=".StatesActivity" />
+        android:theme="@style/Theme.SQLite">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

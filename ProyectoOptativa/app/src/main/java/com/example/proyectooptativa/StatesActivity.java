@@ -56,8 +56,9 @@ public class StatesActivity extends AppCompatActivity {
     protected void botonTriste() {
         Button botonTriste = findViewById(R.id.button3);
         botonTriste.setOnClickListener(v -> {
-            Toast.makeText(this, "¡Animo! ¡Aqui te dejo una canción para que te motives!", Toast.LENGTH_SHORT).show();
-            //meter una canción motivadora.
+            Toast.makeText(this, "¡Animo! Pulsa el boton", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(StatesActivity.this, TristeActivity.class);
+            startActivity(intent);
         });
     }
 

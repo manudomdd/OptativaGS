@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.text.NumberFormat;
+
 public class EstresadoActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
@@ -18,6 +20,13 @@ public class EstresadoActivity extends AppCompatActivity {
         initializeMusic();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+    
     private void initializeMusic() {
         Button botonPlay = findViewById(R.id.button5);
         Button botonPause = findViewById(R.id.button6);
@@ -47,8 +56,6 @@ public class EstresadoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = null;
             }
         });
     }
