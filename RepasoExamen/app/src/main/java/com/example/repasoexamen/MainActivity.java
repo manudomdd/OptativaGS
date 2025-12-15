@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 actualizarFechaHora();
             } catch (NumberFormatException ex) {
-                ex.printStackTrace();
+                Toast.makeText(this, "Debe de introducir un numero valido.", Toast.LENGTH_SHORT).show();
+                return; 
             }
         });
     }
