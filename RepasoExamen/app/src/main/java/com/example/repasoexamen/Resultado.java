@@ -81,10 +81,8 @@ public class Resultado extends AppCompatActivity {
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             if (entry.getKey().startsWith("ultima_")) {
-                Object value = (Integer) entry.getValue();
-                if (value instanceof Integer) {
-                    comentario.setText("La ultima valoracion es de: " + value);
-                }
+                int value = (int) entry.getValue();
+                comentario.setText("La ultima valoracion es de: " + value);
             }
         }
     }
