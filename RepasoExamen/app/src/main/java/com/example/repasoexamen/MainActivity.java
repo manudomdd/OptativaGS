@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText txtPrecio;
     private EditText txtDescuento;
     private TextView txtFecha;
+    private Button btnDemostracion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +41,12 @@ public class MainActivity extends AppCompatActivity {
         initComponents();
         calcularPrecio();
         actualizarFechaHora();
+        irDemostracion();
     }
 
     private void initComponents() {
         btnCalcular = findViewById(R.id.button);
+        btnDemostracion = findViewById(R.id.button6);
         txtPrecio = findViewById(R.id.editTextNumber2);
         txtDescuento = findViewById(R.id.editTextNumber3);
         txtFecha = findViewById(R.id.textView7);
@@ -83,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Debe de introducir un numero valido.", Toast.LENGTH_SHORT).show();
                 return;
             }
+        });
+    }
+
+    private void irDemostracion() {
+        btnDemostracion.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Demostracion.class);
+            startActivity(intent);
         });
     }
 

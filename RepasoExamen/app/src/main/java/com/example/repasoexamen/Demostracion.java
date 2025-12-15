@@ -1,6 +1,10 @@
 package com.example.repasoexamen;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Demostracion extends AppCompatActivity {
+
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +26,23 @@ public class Demostracion extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        initComponents();
+        initVideo();
+    }
+
+    private void initComponents() {
+        videoView = findViewById(R.id.videoView);
+
+    }
+
+    private void initVideo() {
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.demo);
+        videoView.setVideoURI(videoUri);
+
+        MediaController controller = new MediaController(this);
+        videoView.setMediaController(controller);
+
+        videoView.start();
     }
 }
