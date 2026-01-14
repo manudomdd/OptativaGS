@@ -21,9 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // --- INICIO DE LA PRUEBA ---
-
-        // 1. Obtenemos el servicio
         TriviaApiService service = RetrofitClient.getService();
 
         // 2. Preparamos la llamada: 5 preguntas, cualquier categoría, dificultad media
