@@ -216,3 +216,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
+
+//-------PROPUESTA FUTURA---------
+//traducir la app entera a traves de la api.
+//crear un modo multijugador
+//posibilidad de manejo de turnos a traves de hilos
