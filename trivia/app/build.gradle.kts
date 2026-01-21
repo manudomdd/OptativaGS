@@ -43,4 +43,9 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("io.socket:socket.io-client:2.1.0") {
+        // Sintaxis correcta para Kotlin DSL (.kts)
+        exclude(group = "org.json", module = "json")
+    }
 }

@@ -12,25 +12,70 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardScoreHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         app:cardBackgroundColor="#33FFFFFF"
         app:cardCornerRadius="20dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvScore"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:text="Puntos: 0"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yo: 0"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvVS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VS"
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="@+id/tvScore"
+                app:layout_constraintEnd_toStartOf="@+id/tvOpponentScore"
+                app:layout_constraintStart_toEndOf="@+id/tvScore"
+                app:layout_constraintTop_toTopOf="@+id/tvScore" />
+
+            <TextView
+                android:id="@+id/tvOpponentScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rival: 0"
+                android:textColor="#FFCDD2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvGameStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Conectando..."
+                android:textColor="#EEFFFFFF"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvScore" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <ProgressBar
@@ -149,7 +194,6 @@
         app:strokeColor="@color/white"
         app:strokeWidth="2dp" />
 
-
     <Button
         android:id="@+id/btnNext"
         style="@style/Widget.MaterialComponents.Button"
@@ -167,7 +211,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnOption4" />
 
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/gameOverGroup"
         android:layout_width="wrap_content"
@@ -179,7 +222,7 @@
         android:id="@+id/cardGameOver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
+        android:layout_marginHorizontal="24dp"
         app:cardBackgroundColor="@color/card_background"
         app:cardCornerRadius="24dp"
         app:cardElevation="12dp"
@@ -197,30 +240,79 @@
             android:padding="32dp">
 
             <TextView
+                android:id="@+id/tvWinnerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="¡Quiz Finalizado!"
-                android:textColor="@color/text_primary"
-                android:textSize="24sp"
+                android:layout_marginBottom="24dp"
+                android:text="¡RESULTADO!"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Puntuación Final"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp" />
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvFinalScore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif-black"
-                tools:text="150"
-                android:textColor="@color/gold_accent"
-                android:textSize="48sp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TÚ"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvFinalScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="150"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:text="-"
+                    android:textColor="#555555"
+                    android:textSize="32sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RIVAL"
+                        android:textColor="#FFCDD2"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvFinalOpponentScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="120"
+                        android:textColor="#FFCDD2"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -233,7 +325,7 @@
         android:backgroundTint="@android:color/transparent"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"
-        android:text="Jugar de nuevo"
+        android:text="Buscar Nuevo Rival"
         android:textColor="@color/white"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"

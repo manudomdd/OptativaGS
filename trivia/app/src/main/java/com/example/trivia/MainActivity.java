@@ -3,6 +3,8 @@ package com.example.trivia;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -14,37 +16,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 
-import com.example.trivia.api.RetrofitClient;
-import com.example.trivia.api.TriviaApiService;
 import com.example.trivia.models.Question;
-import com.example.trivia.models.TriviaResponse;
+import com.example.trivia.api.WebSocketManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity {
-    private TextView tvQuestion, tvScore;
-    private Button btnOption1, btnOption2, btnOption3, btnOption4, btnNext;
+    private TextView tvQuestion, tvScore, tvOpponentScore, tvGameStatus;
+    private TextView tvFinalScore, tvFinalOpponentScore, tvWinnerText;
+
+    private Button btnOption1, btnOption2, btnOption3, btnOption4, btnNext, btnRestart;
     private ProgressBar progressBar;
-    private Group gameGroup;
+    private Group gameGroup, gameOverGroup;
     private MaterialCardView cardScoreHeader;
     private List<Button> optionButtons;
-
-    private Group gameOverGroup;
-    private TextView tvFinalScore;
-    private Button btnRestart;
 
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
     private int score = 0;
+    private int opponentScore = 0;
     private boolean isAnswered = false;
+    private boolean isWaitingForResults = false;
+    private WebSocketManager socketManager;
+    private String roomId;
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +57,139 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
 
-        startNewGame();
+        socketManager = WebSocketManager.getInstance();
+        socketManager.connect();
+
+        setupSocketListeners();
 
         btnNext.setOnClickListener(v -> {
             currentQuestionIndex++;
             if (currentQuestionIndex < questionList.size()) {
                 showQuestion();
             } else {
-                showGameOverScreen();
+                goToWaitingScreen();
             }
         });
 
-        btnRestart.setOnClickListener(v -> startNewGame());
+        btnRestart.setOnClickListener(v -> buscarPartida());
+        buscarPartida();
+    }
+
+    private void buscarPartida() {
+        score = 0;
+        opponentScore = 0;
+        isWaitingForResults = false;
+
+        tvScore.setText("Yo: 0");
+        tvOpponentScore.setText("Rival: 0");
+        tvGameStatus.setText("Buscando oponente...");
+        tvGameStatus.setTextColor(Color.WHITE);
+
+        gameOverGroup.setVisibility(View.GONE);
+        gameGroup.setVisibility(View.GONE);
+        cardScoreHeader.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        socketManager.getSocket().emit("join_game");
+        Toast.makeText(this, "Buscando oponente...", Toast.LENGTH_SHORT).show();
+    }
+
+    private void goToWaitingScreen() {
+        isWaitingForResults = true;
+        gameGroup.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        tvGameStatus.setText("¡Terminaste! Esperando al rival...");
+        tvGameStatus.setTextColor(Color.YELLOW);
+
+        try {
+            JSONObject json = new JSONObject();
+            json.put("roomId", roomId);
+            socketManager.getSocket().emit("player_finished", json);
+        } catch (JSONException e) { e.printStackTrace(); }
+    }
+
+    private void setupSocketListeners() {
+        socketManager.getSocket().on("game_start", args -> {
+            runOnUiThread(() -> {
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    roomId = data.getString("roomId");
+                    JSONArray questionsArray = data.getJSONArray("questions");
+
+                    questionList = new ArrayList<>();
+                    for (int i = 0; i < questionsArray.length(); i++) {
+                        String jsonString = questionsArray.getJSONObject(i).toString();
+                        Question q = gson.fromJson(jsonString, Question.class);
+                        questionList.add(q);
+                    }
+
+                    progressBar.setVisibility(View.GONE);
+                    gameGroup.setVisibility(View.VISIBLE);
+                    cardScoreHeader.setVisibility(View.VISIBLE);
+                    tvGameStatus.setText("¡Partida en curso!");
+                    currentQuestionIndex = 0;
+                    showQuestion();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        // Evento cuando el rival responde
+        socketManager.getSocket().on("opponent_answered", args -> {
+            runOnUiThread(() -> {
+                try {
+                    JSONObject data = (args.length > 0) ? (JSONObject) args[0] : null;
+                    boolean rivalAcerto = false;
+
+                    if (data != null) rivalAcerto = data.optBoolean("isCorrect", false);
+
+                    if (rivalAcerto) {
+                        opponentScore += 10;
+                        tvOpponentScore.setText("Rival: " + opponentScore);
+                        tvGameStatus.setText("Rival acertó (+10)");
+                        tvGameStatus.setTextColor(Color.GREEN);
+                    } else {
+                        tvGameStatus.setText("Rival falló");
+                        tvGameStatus.setTextColor(Color.RED);
+                    }
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (isWaitingForResults) {
+                            tvGameStatus.setText("Esperando a que el rival termine...");
+                            tvGameStatus.setTextColor(Color.YELLOW);
+                        } else if (gameGroup.getVisibility() == View.VISIBLE) {
+                            tvGameStatus.setText("Jugando...");
+                            tvGameStatus.setTextColor(Color.parseColor("#EEFFFFFF"));
+                        }
+                    }, 1500);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        socketManager.getSocket().on("force_game_over", args -> {
+            runOnUiThread(() -> {
+                progressBar.setVisibility(View.GONE);
+                showGameOverScreen();
+            });
+        });
+
+        socketManager.getSocket().on("waiting_opponent", args -> {
+            runOnUiThread(() -> tvGameStatus.setText("Esperando a otro jugador..."));
+        });
     }
 
     private void initViews() {
-        tvQuestion = findViewById(R.id.tvQuestion);
         tvScore = findViewById(R.id.tvScore);
         cardScoreHeader = findViewById(R.id.cardScoreHeader);
+        tvOpponentScore = findViewById(R.id.tvOpponentScore);
+        tvGameStatus = findViewById(R.id.tvGameStatus);
+
+        tvQuestion = findViewById(R.id.tvQuestion);
         btnOption1 = findViewById(R.id.btnOption1);
         btnOption2 = findViewById(R.id.btnOption2);
         btnOption3 = findViewById(R.id.btnOption3);
@@ -81,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
         gameOverGroup = findViewById(R.id.gameOverGroup);
         tvFinalScore = findViewById(R.id.tvFinalScore);
+        tvFinalOpponentScore = findViewById(R.id.tvFinalOpponentScore);
+        tvWinnerText = findViewById(R.id.tvWinnerText);
         btnRestart = findViewById(R.id.btnRestart);
 
         optionButtons = new ArrayList<>();
@@ -90,54 +211,12 @@ public class MainActivity extends AppCompatActivity {
         optionButtons.add(btnOption4);
     }
 
-    private void startNewGame() {
-        score = 0;
-        currentQuestionIndex = 0;
-        tvScore.setText("Puntos: 0");
-
-        gameOverGroup.setVisibility(View.GONE);
-        gameGroup.setVisibility(View.GONE);
-        cardScoreHeader.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        fetchQuestions();
-    }
-
-    private void fetchQuestions() {
-        TriviaApiService service = RetrofitClient.getService();
-        Call<TriviaResponse> call = service.getQuestions(10, null, "medium", "multiple");
-
-        call.enqueue(new Callback<TriviaResponse>() {
-            @Override
-            public void onResponse(Call<TriviaResponse> call, Response<TriviaResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    questionList = response.body().getResults();
-                    if (!questionList.isEmpty()) {
-                        progressBar.setVisibility(View.GONE);
-                        gameGroup.setVisibility(View.VISIBLE);
-                        showQuestion();
-                    } else {
-                        showError("La API no devolvió preguntas.");
-                    }
-                } else {
-                    showError("Error en la respuesta: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TriviaResponse> call, Throwable t) {
-                showError("Error de conexión: " + t.getMessage());
-            }
-        });
-    }
-
     private void showQuestion() {
         isAnswered = false;
         btnNext.setVisibility(View.INVISIBLE);
         resetButtonColors();
 
         Question q = questionList.get(currentQuestionIndex);
-
         tvQuestion.setText(Html.fromHtml(q.getQuestionText(), Html.FROM_HTML_MODE_LEGACY));
 
         List<String> answers = new ArrayList<>(q.getIncorrectAnswers());
@@ -165,10 +244,11 @@ public class MainActivity extends AppCompatActivity {
         String decodedSelected = Html.fromHtml(selectedAnswer, Html.FROM_HTML_MODE_LEGACY).toString();
 
         MaterialButton matBtn = (MaterialButton) selectedBtn;
+        boolean isCorrect = decodedSelected.equals(decodedCorrect);
 
-        if (decodedSelected.equals(decodedCorrect)) {
+        if (isCorrect) {
             score += 10;
-            tvScore.setText("Puntos: " + score);
+            tvScore.setText("Yo: " + score);
             matBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_correct)));
             matBtn.setTextColor(Color.WHITE);
             matBtn.setStrokeWidth(0);
@@ -177,6 +257,15 @@ public class MainActivity extends AppCompatActivity {
             matBtn.setTextColor(Color.WHITE);
             matBtn.setStrokeWidth(0);
             showCorrectButton(decodedCorrect);
+        }
+
+        try {
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("roomId", roomId);
+            jsonData.put("isCorrect", isCorrect);
+            socketManager.getSocket().emit("submit_answer", jsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         btnNext.setVisibility(View.VISIBLE);
@@ -206,18 +295,30 @@ public class MainActivity extends AppCompatActivity {
     private void showGameOverScreen() {
         gameGroup.setVisibility(View.GONE);
         cardScoreHeader.setVisibility(View.GONE);
-
-        tvFinalScore.setText(String.valueOf(score));
         gameOverGroup.setVisibility(View.VISIBLE);
+
+        updateWinnerDisplay();
     }
 
-    private void showError(String message) {
-        progressBar.setVisibility(View.GONE);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    private void updateWinnerDisplay() {
+        tvFinalScore.setText(String.valueOf(score));
+        tvFinalOpponentScore.setText(String.valueOf(opponentScore));
+
+        if (score > opponentScore) {
+            tvWinnerText.setText("¡HAS GANADO!");
+            tvWinnerText.setTextColor(Color.GREEN);
+        } else if (score < opponentScore) {
+            tvWinnerText.setText("¡HAS PERDIDO!");
+            tvWinnerText.setTextColor(Color.RED);
+        } else {
+            tvWinnerText.setText("¡EMPATE!");
+            tvWinnerText.setTextColor(Color.YELLOW);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        socketManager.disconnect();
     }
 }
-
-//-------PROPUESTA FUTURA---------
-//traducir la app entera a traves de la api.
-//crear un modo multijugador
-//posibilidad de manejo de turnos a traves de hilos
