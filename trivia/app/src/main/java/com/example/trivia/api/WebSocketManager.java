@@ -8,7 +8,7 @@ import io.socket.client.Socket;
 public class WebSocketManager {
     private static WebSocketManager instance;
     private Socket mSocket;
-    
+
     private static final String SERVER_URL = "https://nourishable-grapiest-alayna.ngrok-free.dev";
 
     private WebSocketManager() {
