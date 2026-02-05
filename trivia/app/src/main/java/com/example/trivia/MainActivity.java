@@ -343,26 +343,21 @@ public class MainActivity extends AppCompatActivity {
         tvFinalScore.setText(String.valueOf(score));
         tvFinalOpponentScore.setText(String.valueOf(opponentScore));
 
-        // Reseteamos efectos previos
         konfettiView.reset();
 
         if (score > opponentScore) {
-            // GANASTE
             tvWinnerText.setText("¡HAS GANADO!");
             tvWinnerText.setTextColor(Color.GREEN);
             showVictoryConfetti();
 
         } else if (score < opponentScore) {
-            // PERDISTE
             tvWinnerText.setText("¡HAS PERDIDO!");
             tvWinnerText.setTextColor(Color.RED);
             showSadRain();
 
         } else {
-            // EMPATE
             tvWinnerText.setText("¡EMPATE!");
             tvWinnerText.setTextColor(Color.YELLOW);
-            // (Opcional) showVictoryConfetti() si quieres celebrar empate
         }
     }
 
